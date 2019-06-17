@@ -1192,3 +1192,10 @@ install.packages("ggimage")
 install.packages("gifski")
 install.packages("png")
 ```
+
+But for now...
+---
+class: center, middle
+```{r, echo=FALSE, out.width="75%"}
+knitr::include_graphics("images/pooh.gif")
+```
