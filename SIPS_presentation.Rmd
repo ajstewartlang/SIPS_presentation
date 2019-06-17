@@ -1061,7 +1061,6 @@ full_trains %>%
 full_trains %>% 
   filter(str_detect(departure_station, "PARIS")) %>%
   mutate(departure_station = toTitleCase(tolower(departure_station))) %>%
-  mutate(month = factor(month, levels = 1:12, labels = month.name)) %>%
   group_by(month, year, departure_station) %>%
   summarise(mean_num_of_canceled_trains = mean(num_of_canceled_trains, na.rm = TRUE)) %>%
   ggplot(aes(x = departure_station, 
@@ -1099,8 +1098,8 @@ full_trains_agg %>%
               alpha = .6, size = 5, stroke = 1) +
   geom_label_repel(data = filter(full_trains_agg, 
                                  (year == 2018) & (month == "May" | 
-                                                     month == "April" | 
-                                                     month == "June")), 
+                                                   month == "April" | 
+                                                   month == "June")), 
                    aes(x = departure_station, 
                        y = mean_num_of_canceled_trains,
                        label = month), size = 7) +
@@ -1126,7 +1125,6 @@ full_trains %>%
   filter(service == "International") %>%
   mutate(departure_station = toTitleCase(tolower(departure_station))) %>%
   mutate(departure_station = reorder(departure_station, num_late_at_departure)) %>%
-  mutate(month = factor(month, levels = 1:12, labels = month.name)) %>%
   ggplot(aes(x = departure_station, y = num_late_at_departure, 
              colour = departure_station)) +
   geom_boxplot() +
