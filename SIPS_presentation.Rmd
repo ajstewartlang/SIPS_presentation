@@ -39,6 +39,13 @@ library(rtweet)
 library(leaflet)
 library(RColorBrewer)
 library(MASS)
+library(ggthemes)
+library(tools)
+library(gganimate)
+library(ggimage)
+library(gifski)
+library(png)
+library(ggrepel)
 ```
 
 class: center
@@ -47,7 +54,7 @@ class: center
 
 All slides and R code used to generate these slides available here:
 
-https://github.com/ajstewartlang/ajstewartlang.github.io/tree/master/SIPS_talk
+https://github.com/ajstewartlang/SIPS_presentation
 
 <br style=“line-height:2;”>
 
@@ -646,7 +653,7 @@ data_long %>%
 ---
 # The BBC Cookbook
 
-The BBC (like many other organisations such as the FT) use R and ggplot to generate their data They have even published their own style guide and code for their BBC data visualisation theme.
+The BBC (like many other organisations such as the FT) use R and ggplot to generate their data They have even published their own style guide and code for their BBC data visualization theme.
 
 https://bbc.github.io/rcookbook/
 .center[
@@ -993,18 +1000,179 @@ Patience (young Skywalker) while your Binder builds…
 # Now for your data visualization backwards coding challenge...
 
 Ideally in groups (assuming a range of skill levels), generate R code that will
-re-create each of the following visualizations.  The data are from a TidyTuesday
-dataset and are SNCF train data.
+re-create each of the following visualizations.  The data are SNCF train data 
+from a TidyTuesday.  All instructions for loading the data and the workshop are 
+in the hackmd.io document below.
 
-full_trains <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-02-26/full_trains.csv")
+https://hackmd.io/wlp5EX3ATK2ZCqjnx9DKLg?view
 
 After you have re-created each visualization, create a GitHub repo of your 
 script, a runtime.txt file, and an install.R file.  Then create a Binder from 
 your repo.  While your Binder is building, move onto the next visualization 
 challenge.
 
+At the end of the workshop, you should each have 6 R scripts, 6 new GitHub 
+repositories, and a Binder associated with each of the 6 repositories.
 ---
-# For the animated plot...
+# Visualization 1
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+full_trains <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-02-26/full_trains.csv")
+```
+
+.middle[
+.center[
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=16, fig.height=10}
+full_trains %>% 
+  ggplot(aes(x = journey_time_avg)) +
+  geom_histogram(bins = 20, alpha = .4, fill = "black") +
+  labs(title = "Histogram of Average Journey Time for trains on the SNCF Network",
+       x = "Journey Time (mins.)",
+       y = "Number of Instances") +
+  theme(text = element_text(size = 18)) 
+```
+]
+]
+---
+# Visualization 2
+.middle[
+.center[
+```{r, , echo=FALSE, warning=FALSE, message=FALSE, fig.width=16, fig.height=10}
+full_trains %>% 
+  ggplot(aes(x = journey_time_avg)) +
+  geom_histogram(bins = 20, alpha = .2)  +
+  geom_histogram(data = filter(full_trains, service == "National"), 
+                 aes(x = journey_time_avg),
+                 bins = 20, fill = "red", alpha = .5) +
+  theme(text = element_text(size = 20)) +
+  labs(title = "Histogram of Average Journey Time for trains on the SNCF Network",
+       subtitle = "National Service trains highlighted in red",
+       x = "Journey Time (mins.)",
+       y = "Number of Instances")
+```
+]
+]
+---
+# Visualization 3
+
+.middle[
+.center[
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=16, fig.height=10}
+full_trains %>% 
+  filter(str_detect(departure_station, "PARIS")) %>%
+  mutate(departure_station = toTitleCase(tolower(departure_station))) %>%
+  mutate(month = factor(month, levels = 1:12, labels = month.name)) %>%
+  group_by(month, year, departure_station) %>%
+  summarise(mean_num_of_canceled_trains = mean(num_of_canceled_trains, na.rm = TRUE)) %>%
+  ggplot(aes(x = departure_station, 
+             y = mean_num_of_canceled_trains,
+             colour = departure_station)) +
+  geom_jitter(width = .2, alpha = .6, size = 5, stroke = 1) +
+  guides(colour = FALSE) +
+  coord_flip() +
+  labs(x = NULL, y = NULL, 
+       title = "Cancelled Trains from Paris Railway Stations by Year",
+       subtitle = "Average Number of Cancellations per Month") +
+  theme(text = element_text(size = 25)) +
+  scale_color_tableau() +
+  facet_wrap(~ year) 
+```
+]
+]
+---
+# Visualization 4
+
+.middle[
+.center[
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=16, fig.height=10}
+full_trains_agg <- full_trains %>% 
+  filter(str_detect(departure_station, "PARIS")) %>%
+  mutate(departure_station = toTitleCase(tolower(departure_station))) %>%
+  mutate(month = factor(month, levels = 1:12, labels = month.name)) %>%
+  group_by(month, year, departure_station) %>%
+  summarise(mean_num_of_canceled_trains = mean(num_of_canceled_trains, na.rm = TRUE)) 
+
+full_trains_agg %>%  
+  ggplot(aes(x = departure_station, 
+             y = mean_num_of_canceled_trains)) +
+  geom_jitter(aes(colour = departure_station), width = .2, 
+              alpha = .6, size = 5, stroke = 1) +
+  geom_label_repel(data = filter(full_trains_agg, 
+                                 (year == 2018) & (month == "May" | 
+                                                     month == "April" | 
+                                                     month == "June")), 
+                   aes(x = departure_station, 
+                       y = mean_num_of_canceled_trains,
+                       label = month), size = 7) +
+  guides(colour = FALSE) +
+  coord_flip() +
+  labs(x = NULL, y = NULL, 
+       title = "Cancelled Trains from Paris Railway Stations by Year",
+       subtitle = "Average Number of Cancellations per Month - Strike Months in 2018 highlighted") +
+  theme(text = element_text(size = 25)) +
+  scale_color_tableau() +
+  facet_wrap(~ year) 
+```
+]
+]
+---
+# Visualization 5
+
+.middle[
+.center[
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=16, fig.height=10}
+full_trains %>%
+  filter(year == 2017) %>%
+  filter(service == "International") %>%
+  mutate(departure_station = toTitleCase(tolower(departure_station))) %>%
+  mutate(departure_station = reorder(departure_station, num_late_at_departure)) %>%
+  mutate(month = factor(month, levels = 1:12, labels = month.name)) %>%
+  ggplot(aes(x = departure_station, y = num_late_at_departure, 
+             colour = departure_station)) +
+  geom_boxplot() +
+  guides(colour = FALSE) +
+  coord_flip() +
+  labs(title = "International SNCF Trains Departing Late in 2017",
+       subtitle = "By Departure Station")  +
+  scale_color_colorblind() +
+  theme_fivethirtyeight() +
+  theme(text = element_text(size = 25)) 
+```
+]
+]
+---
+# Visualization 6
+
+.middle[
+.center[
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+p <- full_trains %>%
+  filter(service == "International" & year == 2017) %>%
+  unite(journey, departure_station, arrival_station, sep = " - ") %>% 
+  mutate(journey = toTitleCase(tolower(journey))) %>%
+  mutate(month = factor(month, levels = 1:12, labels = month.name)) %>%
+  mutate(image = "train.png") %>%
+  group_by(journey) %>%
+  arrange(month) %>% 
+  mutate(cum_sum = cumsum((num_late_at_departure))) %>% 
+  ggplot(aes(x = journey, y = cum_sum)) +
+  geom_image(aes(image = image), size = .15) + 
+  guides(colour = FALSE) +
+  coord_flip() +
+  labs(title = "Running Total of International SNCF Trains Departing Late", 
+       subtitle = "{closest_state} 2017", 
+       x = NULL, y = "Running Total of Trains Late at Departure") +
+  theme_economist() +
+  theme(text = element_text(size = 18))  +
+  transition_states(states = month)  
+
+animate(p, height = 500, width = 1000)
+
+```
+]
+]
+---
+# For the animated plot (Visualization 6)...
 
 In addition to the runtime.txt and install.R files, you will also need to create
 an apt.txt file as the gganimate package requires a system level installation

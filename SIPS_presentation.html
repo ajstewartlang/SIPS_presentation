@@ -15,7 +15,7 @@ class: center, middle, title-slide
 Andrew Stewart<br>University of Manchester<br>Twitter: <span class="citation">@ajstewart_lang</span>
 </p>
 <p>Oli Clark<br>Manchester Metropolitan University<br>Twitter: <span class="citation">@psytecholi</span></p>
-### (updated: 2019-06-14)
+### (updated: 2019-06-17)
 
 ---
 
@@ -440,7 +440,7 @@ class: center, middle
 ---
 # The BBC Cookbook
 
-The BBC (like many other organisations such as the FT) use R and ggplot to generate their data They have even published their own style guide and code for their BBC data visualisation theme.
+The BBC (like many other organisations such as the FT) use R and ggplot to generate their data They have even published their own style guide and code for their BBC data visualization theme.
 
 https://bbc.github.io/rcookbook/
 .center[
@@ -709,18 +709,70 @@ Patience (young Skywalker) while your Binder builds…
 # Now for your data visualization backwards coding challenge...
 
 Ideally in groups (assuming a range of skill levels), generate R code that will
-re-create each of the following visualizations.  The data are from a TidyTuesday
-dataset and are SNCF train data.
+re-create each of the following visualizations.  The data are SNCF train data 
+from a TidyTuesday.  All instructions for loading the data and the workshop are 
+in the hackmd.io document below.
 
-full_trains &lt;- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-02-26/full_trains.csv")
+https://hackmd.io/wlp5EX3ATK2ZCqjnx9DKLg?view
 
 After you have re-created each visualization, create a GitHub repo of your 
 script, a runtime.txt file, and an install.R file.  Then create a Binder from 
 your repo.  While your Binder is building, move onto the next visualization 
 challenge.
 
+At the end of the workshop, you should each have 6 R scripts, 6 new GitHub 
+repositories, and a Binder associated with each of the 6 repositories.
 ---
-# For the animated plot...
+# Visualization 1
+
+
+
+.middle[
+.center[
+![](SIPS_presentation_files/figure-html/unnamed-chunk-70-1.png)&lt;!-- --&gt;
+]
+]
+---
+# Visualization 2
+.middle[
+.center[
+![](SIPS_presentation_files/figure-html/unnamed-chunk-71-1.png)&lt;!-- --&gt;
+]
+]
+---
+# Visualization 3
+
+.middle[
+.center[
+![](SIPS_presentation_files/figure-html/unnamed-chunk-72-1.png)&lt;!-- --&gt;
+]
+]
+---
+# Visualization 4
+
+.middle[
+.center[
+![](SIPS_presentation_files/figure-html/unnamed-chunk-73-1.png)&lt;!-- --&gt;
+]
+]
+---
+# Visualization 5
+
+.middle[
+.center[
+![](SIPS_presentation_files/figure-html/unnamed-chunk-74-1.png)&lt;!-- --&gt;
+]
+]
+---
+# Visualization 6
+
+.middle[
+.center[
+![](SIPS_presentation_files/figure-html/unnamed-chunk-75-1.gif)&lt;!-- --&gt;
+]
+]
+---
+# For the animated plot (Visualization 6)...
 
 In addition to the runtime.txt and install.R files, you will also need to create
 an apt.txt file as the gganimate package requires a system level installation
