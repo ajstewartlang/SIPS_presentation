@@ -689,6 +689,25 @@ vis_miss(happy_data)
 .top[
 ```{r, echo=FALSE, fig.width=10, fig.height=4, message=FALSE}
 happy_data %>% 
+  ggplot(aes(x = `Life Ladder`)) + 
+  geom_histogram() +
+  labs(x = "Happiness Index Score", y = "Count", 
+       title = "Histogram of Happiness Scores") 
+```
+]
+.bottom[
+```{r, eval=FALSE}
+happy_data %>% 
+  ggplot(aes(x = `Life Ladder`)) + 
+  geom_histogram() +
+  labs(x = "Happiness Index Score", y = "Number of Instances", 
+       title = "Histogram of Happiness Scores") 
+```
+]
+---
+.top[
+```{r, echo=FALSE, fig.width=10, fig.height=4, message=FALSE}
+happy_data %>% 
   group_by(country) %>%
   filter(!is.na(`Life Ladder`) & year == 2016) %>%
   summarise(score = `Life Ladder`) %>%

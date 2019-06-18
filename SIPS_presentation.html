@@ -15,7 +15,7 @@ class: center, middle, title-slide
 Andrew Stewart<br>University of Manchester<br>Twitter: <span class="citation">@ajstewart_lang</span>
 </p>
 <p>Oli Clark<br>Manchester Metropolitan University<br>Twitter: <span class="citation">@psytecholi</span></p>
-### (updated: 2019-06-17)
+### (updated: 2019-06-18)
 
 ---
 
@@ -478,6 +478,20 @@ vis_miss(happy_data)
 
 ```r
 happy_data %&gt;% 
+  ggplot(aes(x = `Life Ladder`)) + 
+  geom_histogram() +
+  labs(x = "Happiness Index Score", y = "Number of Instances", 
+       title = "Histogram of Happiness Scores") 
+```
+]
+---
+.top[
+![](SIPS_presentation_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
+]
+.bottom[
+
+```r
+happy_data %&gt;% 
   group_by(country) %&gt;%
   filter(!is.na(`Life Ladder`) &amp; year == 2016) %&gt;%
   summarise(score = `Life Ladder`) %&gt;%
@@ -492,7 +506,7 @@ happy_data %&gt;%
 ]
 ---
 .top[
-![](SIPS_presentation_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
+![](SIPS_presentation_files/figure-html/unnamed-chunk-51-1.png)&lt;!-- --&gt;
 ]
 .bottom[
 
@@ -514,7 +528,7 @@ happy_data %&gt;%
 ]
 ---
 .top[
-![](SIPS_presentation_files/figure-html/unnamed-chunk-51-1.png)&lt;!-- --&gt;
+![](SIPS_presentation_files/figure-html/unnamed-chunk-53-1.png)&lt;!-- --&gt;
 ]
 .bottom[
 
@@ -534,7 +548,7 @@ happy_data %&gt;%
 ]
 ---
 .top[
-![](SIPS_presentation_files/figure-html/unnamed-chunk-53-1.png)&lt;!-- --&gt;
+![](SIPS_presentation_files/figure-html/unnamed-chunk-55-1.png)&lt;!-- --&gt;
 ]
 .bottom[
 
@@ -729,14 +743,14 @@ repositories, and a Binder associated with each of the 6 repositories.
 
 .middle[
 .center[
-![](SIPS_presentation_files/figure-html/unnamed-chunk-70-1.png)&lt;!-- --&gt;
+![](SIPS_presentation_files/figure-html/unnamed-chunk-72-1.png)&lt;!-- --&gt;
 ]
 ]
 ---
 # Visualization 2
 .middle[
 .center[
-![](SIPS_presentation_files/figure-html/unnamed-chunk-71-1.png)&lt;!-- --&gt;
+![](SIPS_presentation_files/figure-html/unnamed-chunk-73-1.png)&lt;!-- --&gt;
 ]
 ]
 ---
@@ -744,7 +758,7 @@ repositories, and a Binder associated with each of the 6 repositories.
 
 .middle[
 .center[
-![](SIPS_presentation_files/figure-html/unnamed-chunk-72-1.png)&lt;!-- --&gt;
+![](SIPS_presentation_files/figure-html/unnamed-chunk-74-1.png)&lt;!-- --&gt;
 ]
 ]
 ---
@@ -752,7 +766,7 @@ repositories, and a Binder associated with each of the 6 repositories.
 
 .middle[
 .center[
-![](SIPS_presentation_files/figure-html/unnamed-chunk-73-1.png)&lt;!-- --&gt;
+![](SIPS_presentation_files/figure-html/unnamed-chunk-75-1.png)&lt;!-- --&gt;
 ]
 ]
 ---
@@ -760,7 +774,7 @@ repositories, and a Binder associated with each of the 6 repositories.
 
 .middle[
 .center[
-![](SIPS_presentation_files/figure-html/unnamed-chunk-74-1.png)&lt;!-- --&gt;
+![](SIPS_presentation_files/figure-html/unnamed-chunk-76-1.png)&lt;!-- --&gt;
 ]
 ]
 ---
@@ -768,7 +782,7 @@ repositories, and a Binder associated with each of the 6 repositories.
 
 .middle[
 .center[
-![](SIPS_presentation_files/figure-html/unnamed-chunk-75-1.gif)&lt;!-- --&gt;
+![](SIPS_presentation_files/figure-html/unnamed-chunk-77-1.gif)&lt;!-- --&gt;
 ]
 ]
 ---
