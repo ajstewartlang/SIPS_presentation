@@ -36,4 +36,4 @@ vignettes/*.pdf
 rsconnect/
 
 SIPS_presentation.html
-Dockerfile.key
+holepunch.key
