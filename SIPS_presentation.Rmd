@@ -52,15 +52,19 @@ class: center
 
 # The following is a fully reproducible talk (just add my accent)
 
-All slides and R code used to generate these slides available here:
+All slides and R code used to generate these slides available [here](https://github.com/ajstewartlang/SIPS_presentation)
 
-https://github.com/ajstewartlang/SIPS_presentation
+<br style=“line-height:1;”>
 
-<br style=“line-height:2;”>
-
-```{r, echo=FALSE, out.width="50%"}
+```{r, echo=FALSE, out.width="45%"}
 knitr::include_graphics("images/ssi.png")
 ```
+
+<br style=“line-height:1;”>
+
+Reproducibility and The Turing Way
+
+https://the-turing-way.netlify.com/
 
 .footnote[
 Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
@@ -998,8 +1002,9 @@ that via an additional apt.txt file which lists those packages - this is used
 by apt-install to install those packages from the Ubuntu apt repository.
 
 At the moment, you can’t change the version of R that runs on Binder (currently 
-set to 3.4.4.) so need to go down the Rocker route but be aware that you may 
-not get the right version of the packages that you want…
+set to 3.4.4.) via the runtime.txt file so need to go down the dockerfile route 
+using the holepunch package - link to additional slides at the end of our 
+[hackmd.io](https://hackmd.io/wlp5EX3ATK2ZCqjnx9DKLg?view) doc.
 
 You can close your laptop if Binder is taking too long - the image and your 
 Binder will continue to be built in the Cloud.  And it’s always a good excuse 
