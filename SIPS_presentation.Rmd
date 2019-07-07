@@ -46,6 +46,8 @@ library(ggimage)
 library(gifski)
 library(png)
 library(ggrepel)
+library(grid)
+library(MASS)
 ```
 
 class: center
@@ -840,6 +842,259 @@ happy_data %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 ]
+---
+# Visualising Data from Twitter
+
+Scraping Twitter using the rtweet() package for everyone's favourite progressive 
+Swedish death metal band, Opeth! 🤘  
+
+<p>
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+rt <- search_tweets("Opeth", n = 2000, include_rts = FALSE, retryonratelimit = TRUE)
+rt1 <- separate(data = rt, col = created_at, into = c("date", "time"), sep = " ") 
+rt1 <- rt1[!is.na(rt1$date),]
+rt1$date <- as.factor(rt1$date)
+data <- rt1
+```
+
+.center[
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=6, fig.width=8}
+img <- jpeg::readJPEG("images/opeth.jpg")
+g <- rasterGrob(img, interpolate=TRUE) 
+
+ggplot(data, aes (x = date)) + 
+  annotation_custom(g, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  geom_bar(fill = "white", alpha = .5) + 
+  #scale_y_continuous(expand = c(0,0), limits = c(0, 250)) + 
+  labs(x = "Day", y = "Number of Tweets") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ggtitle(paste("Tweets Mentioning Opeth scraped on", Sys.Date())) 
+```
+]
+---
+class: centre
+
+# Geospatial Plotting of Tweets
+
+```{r, echo=FALSE}
+mymap <- lat_lng(rt)
+
+m <- leaflet(mymap) %>% 
+  addTiles()
+```
+
+.center[
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=6, fig.width=8}
+m %>% addCircles(lng = ~lng, lat = ~lat, weight = 8, radius = 40, 
+                 color = "#fb3004", stroke = TRUE, fillOpacity = 0.8)
+```
+]
+
+---
+class: middle, center
+# Teaching with Animations
+
+---
+# Data Simulations and Data Visualisation - Hockey Game Simulation
+
+Imagine a hockey game where we know that Team A scores exactly 1 goal for sure and Team B takes 20 shots, each with a 5.5% chance of going in.
+
+Which team would you rather be?
+
+(nothing additional happens if you tie.)
+
+```{r, eval=FALSE}
+set.seed(1234)
+
+team_b_goals <- NULL
+
+for(i in 1:10000) {
+score <- sum(sample(c(1, 0), size = 20, replace = TRUE, 
+                    prob = c(0.055, 1-.055)))
+team_b_goals <- c(team_b_goals, score)}
+
+team_a_goals <- rep(1, 10000)
+
+all_games <- as_tibble(cbind(team_a_goals, team_b_goals))
+```
+
+---
+```{r, echo=FALSE, warning=FALSE}
+set.seed(1234)
+
+team_b_goals <- NULL
+
+for(i in 1:10000) {
+score <- sum(sample(c(1, 0), size = 20, replace = TRUE, prob = c(0.055, 1-.055)))
+team_b_goals <- c(team_b_goals, score)}
+
+team_a_goals <- rep(1, 10000)
+
+all_games <- as_tibble(cbind(team_a_goals, team_b_goals))
+```
+
+```{r, echo=FALSE}
+paste("Games where Team A scores more goals than Team B: ", nrow(filter(all_games, team_a_goals > team_b_goals)))
+paste("Games where Team A scores fewer goals than Team B: ", nrow(filter(all_games, team_a_goals < team_b_goals)))
+paste("Games where there is a tie : ", nrow(filter(all_games, team_a_goals == team_b_goals)))
+```
+
+.center[
+```{r, echo=FALSE, eval=TRUE}
+all_games <- all_games %>% 
+  mutate(team_a_wins = team_a_goals > team_b_goals,
+         team_b_wins = team_b_goals > team_a_goals) 
+
+all_games$game_number <- seq(1:10000)
+all_games$team_a_wins <- cumsum(all_games$team_a_wins)
+all_games$team_b_wins <- cumsum(all_games$team_b_wins)
+
+small_data <- tibble(c(all_games$team_a_wins, all_games$team_b_wins), 
+                    c(rep("Team_A", 10000), rep("Team_B", 10000)),
+                    c(seq(1:10000), seq(1:10000)))
+
+colnames(small_data) <- c("Points", "Team", "Game")
+
+small_data %>% 
+  ggplot(aes(x = Points, y = Game, group = Team, colour = Team)) +
+  geom_point() +
+  geom_line(size = 2) + 
+  coord_flip() +
+  transition_reveal(Game) +
+  shadow_mark(past = TRUE) +
+  labs(title = "Wins of Team A vs. Team B", 
+       x = "Running total of wins",
+       y = "Game number") +
+  theme(text = element_text(size = 15))
+```
+]
+---
+class: middle, center
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+set.seed(1234)
+
+all_data <- NULL
+for (sample_size in 2:250) {
+  dv <- tibble(rnorm(sample_size, 1000, 50), sample_size)
+  all_data <- rbind(all_data, dv)
+}
+
+colnames(all_data) <- c("DV", "sample_size")
+
+ci_comp <- function(a, b, n){
+  error <- qnorm(0.975)*b/sqrt(n)
+  upper <- a + error
+  lower <- a- error
+  result <- list(a, upper, lower, n)
+  return(result)
+}
+
+all_summ <- NULL
+for (i in 2:250) {
+  temp_data <- filter(all_data, sample_size == i)
+  summ_data <- unlist(ci_comp(mean(temp_data$DV), sd(temp_data$DV), length(temp_data$DV)))
+  all_summ <- rbind(all_summ, summ_data)
+}
+
+all_summ <- as_tibble(all_summ)
+
+colnames(all_summ) <- c("est", "upper_ci", "lower_ci", "sample_size")
+
+p <- all_summ %>%
+  ggplot(aes(x = sample_size, y = est)) +
+  geom_errorbar(aes(ymax = upper_ci, ymin = lower_ci)) +
+  geom_point() +
+  labs(x = "Sample Size", y = "Estimate of population mean", 
+       title = "Estimation precision increases with sample size") +
+  transition_time(sample_size) +
+  shadow_trail(distance = .01, alpha = .25) +
+  theme(text = element_text(size = 25))
+
+animate(p, height = 500, width = 1000)
+```
+
+---
+# Sample size of 25 when population r = .5
+
+.center[
+```{r, echo=FALSE}
+mu <- c(1000, 2000) 
+myr <- 35.35534
+mysigma <- matrix(c(100, myr, myr, 50), 2, 2) 
+
+data <- NULL
+sample_size <- 25
+
+set.seed(1234)
+for (i in 2:10) {
+  sample <- data.frame(mvrnorm(sample_size, mu, mysigma))
+  sample$sample <- i
+  data <- rbind(cbind(sample, rcorr(sample$X1, sample$X2)$r[2]), data)
+}
+
+sample <- data.frame(mvrnorm(sample_size, mu, mysigma, empirical = FALSE))
+sample$sample <- 1
+data <- rbind(cbind(sample, rcorr(sample$X1, sample$X2)$r[2]), data)
+
+colnames(data) <- c("Var_1", "Var_2", "Sample", "Correlation")
+data$Correlation <- paste("r = ", round(data$Correlation, 3))
+```
+
+```{r, eval=TRUE, echo=FALSE}
+ggplot(data, aes(x = Var_1, y = Var_2)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = TRUE) + 
+  transition_time(Sample) + 
+  labs(x = "Variable 1", 
+       y = "Variable 2", 
+       title = "10 samples where each sample size = 25") + 
+  theme(title = element_text(size = 15)) +
+  ease_aes('cubic-in-out')
+```
+]
+
+---
+# Sample size of 250 when population r = .5
+
+.center[
+```{r, echo=FALSE}
+mu <- c(1000, 2000) 
+myr <- 35.35534
+mysigma <- matrix(c(100, myr, myr, 50), 2, 2) 
+
+data <- NULL
+sample_size <- 250
+
+set.seed(1234)
+for (i in 2:10) {
+  sample <- data.frame(mvrnorm(sample_size, mu, mysigma))
+  sample$sample <- i
+  data <- rbind(cbind(sample, rcorr(sample$X1, sample$X2)$r[2]), data)
+}
+
+sample <- data.frame(mvrnorm(sample_size, mu, mysigma, empirical = FALSE))
+sample$sample <- 1
+data <- rbind(cbind(sample, rcorr(sample$X1, sample$X2)$r[2]), data)
+
+colnames(data) <- c("Var_1", "Var_2", "Sample", "Correlation")
+data$Correlation <- paste("r = ", round(data$Correlation, 3))
+
+```
+
+```{r, eval=TRUE, echo=FALSE}
+ggplot(data, aes(x = Var_1, y = Var_2)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = TRUE) + 
+  transition_time(Sample) + 
+  labs(x = "Variable 1", 
+       y = "Variable 2", 
+       title = "10 samples where each sample size = 250") + 
+  theme(title = element_text(size = 15)) +
+  ease_aes('cubic-in-out')
+```
+]
+
 ---
 # Binder for fully reproducible computational environments
 
