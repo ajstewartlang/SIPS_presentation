@@ -714,76 +714,72 @@ happy_data %>%
 .top[
 ```{r, echo=FALSE, fig.width=10, fig.height=4, message=FALSE}
 happy_data %>% 
-  group_by(country) %>%
   filter(!is.na(`Life Ladder`) & year == 2016) %>%
-  summarise(score = `Life Ladder`) %>%
-  mutate(country = reorder(country, score)) %>%
-  top_n(20) %>%
-  ggplot(aes(x = score, y = country)) + 
-  geom_point() +
-  labs(x = "Happiness Index Score", y = "Country", 
-       title = "Top 20 Happiest Countries in 2016") +
-  theme_tufte(base_size = 15) 
-```
-]
-.bottom[
-```{r, eval=FALSE}
-happy_data %>% 
-  group_by(country) %>%
-  filter(!is.na(`Life Ladder`) & year == 2016) %>%
-  summarise(score = `Life Ladder`) %>%
-  mutate(country = reorder(country, score)) %>%
-  top_n(20) %>%
-  ggplot(aes(x = score, y = country)) + 
-  geom_point() +
-  labs(x = "Happiness Index Score", y = "Country", 
-       title = "Top 20 Happiest Countries in 2016") +
-  theme_tufte(base_size = 15) 
-```
-]
----
-.top[
-```{r, echo=FALSE, fig.width=10, fig.height=4}
-country_list <- c("United Kingdom", "France", "Germany", 
-                  "Italy", "Norway", "United States")
-happy_data %>% 
-  filter(country %in% country_list) %>%
-  filter(!is.na(`Social support`)) %>%
-  mutate(score = `Social support`) %>%
-  mutate(country = reorder(country, score)) %>%
-  ggplot(aes(y = score, x = country, fill = country)) + 
-  geom_boxplot(width = .5) +
-  labs(y = "Boxplot of Social support", x = "Country", 
-       title = "Social support") +  
-  guides(fill = FALSE) + 
-  coord_flip() + theme_tufte(base_size = 15)
-```
-]
-.bottom[
-```{r, eval=FALSE}
-country_list <- c("United Kingdom", "France", "Germany", 
-                  "Italy", "Norway", "United States")
-happy_data %>% 
-  filter(country %in% country_list) %>%
-  filter(!is.na(`Social support`)) %>%
-  mutate(score = `Social support`) %>%
-  mutate(country = reorder(country, score)) %>%
-  ggplot(aes(y = score, x = country, fill = country)) + 
-  geom_boxplot(width = .5) +
-  labs(y = "Boxplot of Social support", x = "Country", 
-       title = "Social support") +  
-  guides(fill = FALSE) + 
-  coord_flip() + theme_tufte(base_size = 15)
-```
-]
----
-.top[
-```{r, echo=FALSE, fig.width=10, fig.height=4}
-happy_data %>% 
-  filter(country %in% country_list) %>%
-  group_by(country) %>%
   mutate(score = `Life Ladder`) %>%
-  ungroup() %>%
+  mutate(country = reorder(country, score)) %>%
+  top_n(20) %>%
+  ggplot(aes(x = score, y = country)) + 
+  geom_point() +
+  labs(x = "Happiness Index Score", y = "Country", 
+       title = "Top 20 Happiest Countries in 2016") +
+  theme_tufte(base_size = 15) 
+```
+]
+.bottom[
+```{r, eval=FALSE}
+happy_data %>% 
+  filter(!is.na(`Life Ladder`) & year == 2016) %>%
+  mutate(score = `Life Ladder`) %>%
+  mutate(country = reorder(country, score)) %>%
+  top_n(20) %>%
+  ggplot(aes(x = score, y = country)) + 
+  geom_point() +
+  labs(x = "Happiness Index Score", y = "Country", 
+       title = "Top 20 Happiest Countries in 2016") +
+  theme_tufte(base_size = 15) 
+```
+]
+---
+.top[
+```{r, echo=FALSE, fig.width=10, fig.height=4}
+country_list <- c("United Kingdom", "France", "Germany", 
+                  "Italy", "Norway", "United States")
+happy_data %>% 
+  filter(country %in% country_list) %>%
+  filter(!is.na(`Social support`)) %>%
+  mutate(score = `Social support`) %>%
+  mutate(country = reorder(country, score)) %>%
+  ggplot(aes(y = score, x = country, fill = country)) + 
+  geom_boxplot(width = .5) +
+  labs(y = "Boxplot of Social support", x = "Country", 
+       title = "Social support") +  
+  guides(fill = FALSE) + 
+  coord_flip() + theme_tufte(base_size = 15)
+```
+]
+.bottom[
+```{r, eval=FALSE}
+country_list <- c("United Kingdom", "France", "Germany", 
+                  "Italy", "Norway", "United States")
+happy_data %>% 
+  filter(country %in% country_list) %>%
+  filter(!is.na(`Social support`)) %>%
+  mutate(score = `Social support`) %>%
+  mutate(country = reorder(country, score)) %>%
+  ggplot(aes(y = score, x = country, fill = country)) + 
+  geom_boxplot(width = .5) +
+  labs(y = "Boxplot of Social support", x = "Country", 
+       title = "Social support") +  
+  guides(fill = FALSE) + 
+  coord_flip() + theme_tufte(base_size = 15)
+```
+]
+---
+.top[
+```{r, echo=FALSE, fig.width=10, fig.height=4}
+happy_data %>% 
+  filter(country %in% country_list) %>%
+  mutate(score = `Life Ladder`) %>%
   mutate(country = reorder(country, score)) %>%
   ggplot(aes(x = country, y = score)) + 
   geom_boxplot() +
@@ -796,9 +792,7 @@ happy_data %>%
 ```{r, eval=FALSE}
 happy_data %>% 
   filter(country %in% country_list) %>%
-  group_by(country) %>%
   mutate(score = `Life Ladder`) %>%
-  ungroup() %>%
   mutate(country = reorder(country, score)) %>%
   ggplot(aes(x = country, y = score)) + 
   geom_boxplot() +
