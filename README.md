@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/191972054.svg)](https://zenodo.org/badge/latestdoi/191972054)
+
 # SIPS presentation links
 
 ## Slides for main presentation
